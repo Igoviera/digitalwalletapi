@@ -10,4 +10,8 @@ public interface AccountService {
     BigDecimal getBalance(Long id);
     void credit (Long accountId, BigDecimal amount);
     void debit (Long accountId, BigDecimal amount);
+
+    Account getAccountById(Long accountId);
+
+    Account createAccountForUser(User user);
 }

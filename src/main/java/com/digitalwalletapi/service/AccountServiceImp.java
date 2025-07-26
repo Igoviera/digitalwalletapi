@@ -1,5 +1,6 @@
 package com.digitalwalletapi.service;
 
+import com.digitalwalletapi.enums.TransactionType;
 import com.digitalwalletapi.model.Account;
 import com.digitalwalletapi.model.User;
 import com.digitalwalletapi.repository.AccountRepository;
@@ -15,6 +16,9 @@ public class AccountServiceImp implements AccountService{
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private TransactionService transactionService;
 
     @Override
     public Account creatAccount(User user) {
@@ -35,7 +39,9 @@ public class AccountServiceImp implements AccountService{
     public void credit(Long accountId, BigDecimal amount) {
         Account account = getAccount(accountId);
         account.credit(amount);
+
         accountRepository.save(account);
+        transactionService.register(account, TransactionType.DEPOSITO, amount, null);
     }
 
     @Override
@@ -44,6 +50,18 @@ public class AccountServiceImp implements AccountService{
         Account account = getAccount(accountId);
         account.debit(amount);
         accountRepository.save(account);
+        transactionService.register(account, TransactionType.SAQUE, amount, null);
+    }
+
+    @Override
+    public Account getAccountById(Long accountId) {
+        return getAccount(accountId);
+    }
+
+    @Override
+    public Account createAccountForUser(User user) {
+        Account account = new Account(user);
+        return accountRepository.save(account);
     }
 
     private Account getAccount(Long id) {

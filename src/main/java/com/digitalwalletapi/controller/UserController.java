@@ -1,7 +1,9 @@
 package com.digitalwalletapi.controller;
 
+import com.digitalwalletapi.dto.CreateAccountRequestDTO;
 import com.digitalwalletapi.model.User;
 import com.digitalwalletapi.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +18,8 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public User create(@RequestBody User user){
+    public User create(@RequestBody @Valid CreateAccountRequestDTO req){
+        User user = userService.getById(req.getUserId());
         return userService.create(user);
     }
 }
