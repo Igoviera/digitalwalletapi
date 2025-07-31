@@ -18,8 +18,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public User create(@RequestBody @Valid CreateAccountRequestDTO req){
-        User user = userService.getById(req.getUserId());
+    public User create(@RequestBody User user){
         return userService.create(user);
     }
 }

@@ -27,16 +27,10 @@ public class TransactionController {
     public ResponseEntity<List<TransactionResponseDTO>> getStatement(@PathVariable Long accountId) {
         Account account = accountService.getAccountById(accountId);
 
-        List<Transaction> statement = transactionService.getStatement(account);
+        List<Transaction> transactions = transactionService.getStatement(account);
 
-        List<TransactionResponseDTO> response = statement.stream()
-                .map(tx -> new TransactionResponseDTO(
-                        tx.getId(),
-                        tx.getType(),
-                        tx.getAmount(),
-                        tx.getTimestamp(),
-                        tx.getTargetAccount() != null ? tx.getTargetAccount().getId() : null
-                ))
+        List<TransactionResponseDTO> response = transactions.stream()
+                .map(TransactionResponseDTO::new)
                 .toList();
 
         return ResponseEntity.ok(response);
