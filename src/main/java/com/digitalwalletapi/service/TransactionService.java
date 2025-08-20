@@ -6,8 +6,9 @@ import com.digitalwalletapi.model.Transaction;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface TransactionService {
     Transaction register(Account account, TransactionType type, BigDecimal amount, Account targetAccount);
-    List<Transaction> getStatement(Account account);
+    List<Transaction> getStatement(Optional<Account> account);
 }

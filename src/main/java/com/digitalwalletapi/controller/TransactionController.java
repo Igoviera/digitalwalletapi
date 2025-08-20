@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/digitalwallet/transactions")
@@ -23,9 +24,9 @@ public class TransactionController {
     @Autowired
     private AccountService accountService;
 
-    @GetMapping("/{accountId}")
-    public ResponseEntity<List<TransactionResponseDTO>> getStatement(@PathVariable Long accountId) {
-        Account account = accountService.getAccountById(accountId);
+    @GetMapping("/{accountNumber}")
+    public ResponseEntity<List<TransactionResponseDTO>> getStatement(@PathVariable String accountNumber) {
+        Optional<Account> account = accountService.getAccountNumber(accountNumber);
 
         List<Transaction> transactions = transactionService.getStatement(account);
 

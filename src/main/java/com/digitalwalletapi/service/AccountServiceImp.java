@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class AccountServiceImp implements AccountService {
@@ -22,23 +24,22 @@ public class AccountServiceImp implements AccountService {
     private TransactionService transactionService;
 
     @Override
-    public Account creatAccount(User user) {
-        accountRepository.findByUser(user).orElseThrow(() -> new RuntimeException("Usuário já possui uma conta"));
-
-        Account account = new Account(user);
+    public Account createAccount(User user) {
+        String accountNumber = generateUniqueAccountNumber();
+        Account account = new Account(user, accountNumber);
 
         return accountRepository.save(account);
     }
 
     @Override
-    public BigDecimal getBalance(Long id) {
-        return getAccount(id).getBalance();
+    public BigDecimal getBalance(String accountNumber) {
+        return accountNumber(accountNumber).getBalance();
     }
 
     @Override
     @Transactional
-    public Transaction credit(Long accountId, BigDecimal amount) {
-        Account account = getAccount(accountId);
+    public Transaction credit(String accountNumber, BigDecimal amount) {
+        Account account = accountNumber(accountNumber);
         account.credit(amount);
 
         accountRepository.save(account);
@@ -47,8 +48,9 @@ public class AccountServiceImp implements AccountService {
 
     @Override
     @Transactional
-    public Transaction debit(Long accountId, BigDecimal amount) {
-        Account account = getAccount(accountId);
+    public Transaction debit(String accountNumber, BigDecimal amount) {
+        Account account =accountNumber(accountNumber);
+
         account.debit(amount);
 
         accountRepository.save(account);
@@ -57,29 +59,29 @@ public class AccountServiceImp implements AccountService {
     }
 
     @Override
-    public Account getAccountById(Long accountId) {
-        return getAccount(accountId);
+    public Optional<Account> getAccountNumber(String accountNumber) {
+        return accountRepository.findByAccountNumber(accountNumber);
     }
 
-    @Override
-    public Account createAccountForUser(User user) {
-        Account account = new Account(user);
-        return accountRepository.save(account);
-    }
+//    @Override
+//    public Account createAccountForUser(User user) {
+//        Account account = new Account(user);
+//        return accountRepository.save(account);
+//    }
 
     @Override
     @Transactional
-    public Transaction transfer(Long sourceAccountId, Long targetAccountId, BigDecimal amount) {
+    public Transaction transfer(String sourceAccountNumber, String targetAccountNumber, BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new RuntimeException("Valor da transferência deve ser positivo.");
         }
 
-        if (sourceAccountId.equals(targetAccountId)){
+        if (sourceAccountNumber.equals(targetAccountNumber)){
             throw new IllegalArgumentException("A conta de origem e destino não podem ser iguais.");
         }
 
-        Account sourceAccount = getAccount(sourceAccountId);
-        Account targetAccount = getAccount(targetAccountId);
+        Account sourceAccount = accountNumber(sourceAccountNumber);
+        Account targetAccount = accountNumber(targetAccountNumber);
 
         if (sourceAccount == null || targetAccount == null) {
             throw new IllegalArgumentException("Conta de origem ou destino não encontrada.");
@@ -99,8 +101,16 @@ public class AccountServiceImp implements AccountService {
         return transactionService.register(targetAccount, TransactionType.TRANSFERENCIA_RECEBIDA, amount, sourceAccount);
     }
 
-    private Account getAccount(Long id) {
-        return accountRepository.findById(id)
+    private Account accountNumber(String accountNumber) {
+        return accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada"));
+    }
+
+    private String generateUniqueAccountNumber(){
+        String accountNumber;
+        do{
+            accountNumber = String.format("%08d", new Random().nextInt(100_000_000));
+        }while (accountRepository.existsByAccountNumber(accountNumber));
+        return accountNumber;
     }
 }

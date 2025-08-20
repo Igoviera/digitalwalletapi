@@ -12,7 +12,10 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @Column(nullable = false, unique = true, length = 20)
+    private String accountNumber;
+
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
@@ -22,7 +25,8 @@ public class Account {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public Account(User user) {
+    public Account(User user , String accountNumber) {
+        this.accountNumber = accountNumber;
         this.user = user;
         this.balance = BigDecimal.ZERO;
         this.createdAt = LocalDateTime.now();
@@ -33,6 +37,10 @@ public class Account {
 
     public Long getId() {
         return id;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
     public User getUser() {

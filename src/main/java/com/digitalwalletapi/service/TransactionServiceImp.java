@@ -3,7 +3,6 @@ package com.digitalwalletapi.service;
 import com.digitalwalletapi.enums.TransactionType;
 import com.digitalwalletapi.model.Account;
 import com.digitalwalletapi.model.Transaction;
-import com.digitalwalletapi.model.User;
 import com.digitalwalletapi.repository.AccountRepository;
 import com.digitalwalletapi.repository.TransactionRepository;
 import com.digitalwalletapi.repository.UserRespository;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransactionServiceImp implements TransactionService{
@@ -32,7 +32,7 @@ public class TransactionServiceImp implements TransactionService{
     }
 
     @Override
-    public List<Transaction> getStatement(Account account) {
+    public List<Transaction> getStatement(Optional<Account> account) {
         return transactionRepository.findAllByAccountOrderByTimestampDesc(account);
     }
 }

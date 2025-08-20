@@ -33,23 +33,14 @@ public class AccountController {
     @Autowired
     private PdfService pdfService;
 
-    @PostMapping
-    public ResponseEntity<AccountResponseDTO> createAccount(@RequestBody CreateAccountRequestDTO request) {
-        User user = userService.getById(request.getUserId());
-
-        Account account = accountService.createAccountForUser(user);
-
-        return ResponseEntity.ok(new AccountResponseDTO(account));
+    @GetMapping("/{accountNumber}/balance")
+    public ResponseEntity<BigDecimal> getBalance(@PathVariable String accountNumber){
+        return ResponseEntity.ok(accountService.getBalance(accountNumber));
     }
 
-    @GetMapping("/{id}/balance")
-    public ResponseEntity<BigDecimal> getBalance(@PathVariable Long id){
-        return ResponseEntity.ok(accountService.getBalance(id));
-    }
-
-    @PostMapping("/{id}/credit")
-    public ResponseEntity<byte[]> credit(@PathVariable Long id, @RequestBody AmountDTO amount) throws DocumentException {
-        Transaction transaction = accountService.credit(id, amount.amount());
+    @PostMapping("/{accountNumber}/credit")
+    public ResponseEntity<byte[]> credit(@PathVariable String accountNumber, @RequestBody AmountDTO amount) throws DocumentException {
+        Transaction transaction = accountService.credit(accountNumber, amount.amount());
 
         byte[] pdf = pdfService.generateTransactionReceipt(transaction);
 
@@ -60,9 +51,9 @@ public class AccountController {
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/debit")
-    public ResponseEntity<byte[]> debit(@PathVariable Long id, @RequestBody AmountDTO amount) throws DocumentException {
-        Transaction transaction = accountService.debit(id,amount.amount());
+    @PostMapping("/{accountNumber}/debit")
+    public ResponseEntity<byte[]> debit(@PathVariable String accountNumber, @RequestBody AmountDTO amount) throws DocumentException {
+        Transaction transaction = accountService.debit(accountNumber,amount.amount());
 
         byte[] pdf = pdfService.generateTransactionReceipt(transaction);
 
@@ -73,12 +64,12 @@ public class AccountController {
         return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/transfer")
+    @PostMapping("/{accountNumber}/transfer")
     public ResponseEntity<byte[]> transfer(
-            @PathVariable("id") Long sourceAccountId,
+            @PathVariable("accountNumber") String sourceAccountNumber,
             @RequestBody TransferRequestDTO dto
     ) throws Exception {
-        Transaction tx = accountService.transfer(sourceAccountId, dto.targetAccountId(), dto.amount());
+        Transaction tx = accountService.transfer(sourceAccountNumber, dto.targetAccountNumber(), dto.amount());
 
         byte[] pdf = pdfService.generateTransactionReceipt(tx);
 

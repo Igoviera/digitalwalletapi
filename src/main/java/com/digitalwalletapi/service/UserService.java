@@ -1,9 +1,15 @@
 package com.digitalwalletapi.service;
 
+import com.digitalwalletapi.dto.UserRequestDTO;
+import com.digitalwalletapi.dto.UserResponseDTO;
 import com.digitalwalletapi.model.User;
 
-public interface UserService {
-    User create(User user);
+import java.util.List;
 
-    User getById(Long userId);
+public interface UserService {
+    UserResponseDTO create(UserRequestDTO user);
+
+    UserResponseDTO getById(Long userId);
+
+    List<UserResponseDTO> getAll();
 }

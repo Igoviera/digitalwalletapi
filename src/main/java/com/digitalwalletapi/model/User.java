@@ -1,5 +1,6 @@
 package com.digitalwalletapi.model;
 
+import com.digitalwalletapi.dto.AccountResponseDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,6 +16,9 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Account account;
 
     public User() {
     }
@@ -56,5 +60,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }
