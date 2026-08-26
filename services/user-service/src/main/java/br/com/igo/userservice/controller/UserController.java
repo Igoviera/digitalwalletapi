@@ -3,6 +3,7 @@ package br.com.igo.userservice.controller;
 import br.com.igo.userservice.dto.UserRequestDTO;
 import br.com.igo.userservice.dto.UserResponseDTO;
 import br.com.igo.userservice.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     private final UserService userService;
@@ -20,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@RequestBody UserRequestDTO userDTO){
+    public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserRequestDTO userDTO){
         UserResponseDTO createUser = userService.create(userDTO);
         return ResponseEntity.ok(createUser);
     }
