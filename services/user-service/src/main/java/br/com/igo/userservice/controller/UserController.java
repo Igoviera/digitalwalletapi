@@ -1,6 +1,7 @@
 package br.com.igo.userservice.controller;
 
-import br.com.igo.userservice.entity.User;
+import br.com.igo.userservice.dto.UserRequestDTO;
+import br.com.igo.userservice.dto.UserResponseDTO;
 import br.com.igo.userservice.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +20,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user){
-        User createUser = userService.create(user);
+    public ResponseEntity<UserResponseDTO> create(@RequestBody UserRequestDTO userDTO){
+        UserResponseDTO createUser = userService.create(userDTO);
         return ResponseEntity.ok(createUser);
     }
 }
