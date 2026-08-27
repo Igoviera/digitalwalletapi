@@ -5,10 +5,9 @@ import br.com.igo.userservice.dto.UserResponseDTO;
 import br.com.igo.userservice.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -24,5 +23,15 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserRequestDTO userDTO){
         UserResponseDTO createUser = userService.create(userDTO);
         return ResponseEntity.ok(createUser);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserResponseDTO>> findAll() {
+        return ResponseEntity.ok(userService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.findById(id));
     }
 }
