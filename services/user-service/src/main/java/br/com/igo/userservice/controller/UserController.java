@@ -1,5 +1,6 @@
 package br.com.igo.userservice.controller;
 
+import br.com.igo.userservice.dto.UpdateUserRequestDTO;
 import br.com.igo.userservice.dto.UserRequestDTO;
 import br.com.igo.userservice.dto.UserResponseDTO;
 import br.com.igo.userservice.service.UserService;
@@ -33,5 +34,13 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.findById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> update(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateUserRequestDTO dto
+    ) {
+        return ResponseEntity.ok(userService.update(id, dto));
     }
 }

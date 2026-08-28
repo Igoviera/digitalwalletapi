@@ -1,5 +1,6 @@
 package br.com.igo.userservice.service;
 
+import br.com.igo.userservice.dto.UpdateUserRequestDTO;
 import br.com.igo.userservice.dto.UserRequestDTO;
 import br.com.igo.userservice.dto.UserResponseDTO;
 import br.com.igo.userservice.entity.User;
@@ -80,6 +81,40 @@ public class UserService {
                 user.getCpf(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()
+        );
+    }
+
+    public UserResponseDTO update(Long id, UpdateUserRequestDTO dto){
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourseNotFoundException("Usuário não encontrado")
+                );
+
+        if (!user.getEmail().equals(dto.email()) && userRepository.existsByEmail(dto.email())) {
+            throw new BusinessException("Email já cadastrado");
+        }
+
+        if (!user.getCpf().equals(dto.email()) && userRepository.existsByCpf(dto.cpf())){
+            throw new BusinessException("CPF já cadastrado");
+        }
+
+        user.setName(dto.name());
+        user.setEmail(dto.email());
+        user.setCpf(dto.cpf());
+
+        if (!passwordEncoder.matches(dto.password(), user.getPassword())){
+            user.setPassword(passwordEncoder.encode(dto.password()));
+        }
+
+        User updatedUser = userRepository.save(user);
+
+        return new UserResponseDTO(
+                updatedUser.getId(),
+                updatedUser.getName(),
+                updatedUser.getEmail(),
+                updatedUser.getCpf(),
+                updatedUser.getCreatedAt(),
+                updatedUser.getUpdatedAt()
         );
     }
 }
