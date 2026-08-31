@@ -5,10 +5,7 @@ import br.com.igo.accountservice.dto.AccountResponseDTO;
 import br.com.igo.accountservice.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/accounts")
@@ -23,5 +20,10 @@ public class AccountController {
     @PostMapping
     public ResponseEntity<AccountResponseDTO> create(@Valid @RequestBody AccountRequestDTO dto) {
         return ResponseEntity.ok(accountService.create(dto));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AccountResponseDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(accountService.findById(id));
     }
 }

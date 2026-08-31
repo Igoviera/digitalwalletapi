@@ -34,6 +34,13 @@ public class AccountService {
         return toResponseDTO(savedAcoount);
     }
 
+    public AccountResponseDTO findById(Long id){
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+
+        return toResponseDTO(account);
+    }
+
 
 
     private String generateAccountNumber() {
