@@ -8,7 +8,7 @@ public record AccountResponseDTO(
         Long userId,
         String accountNumber,
         BigDecimal balance,
-        String status,
+        br.com.igo.accountservice.enums.AccountStatus status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {

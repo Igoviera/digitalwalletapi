@@ -3,9 +3,11 @@ package br.com.igo.accountservice.service;
 import br.com.igo.accountservice.dto.AccountRequestDTO;
 import br.com.igo.accountservice.dto.AccountResponseDTO;
 import br.com.igo.accountservice.entity.Account;
+import br.com.igo.accountservice.enums.AccountStatus;
 import br.com.igo.accountservice.repository.AccountRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -41,6 +43,27 @@ public class AccountService {
         return toResponseDTO(account);
     }
 
+    public List<AccountResponseDTO> findAll(){
+        return accountRepository.findAll()
+                .stream().map(account -> toResponseDTO(account))
+                .toList();
+    }
+
+    public AccountResponseDTO findByUserId(Long id){
+        Account account = accountRepository.findByUserId(id)
+                .orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+
+        return toResponseDTO(account);
+    }
+
+    public void closeAccount(Long id){
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Conta não encontrada"));
+
+       account.setStatus(AccountStatus.CLOSED);
+
+       accountRepository.save(account);
+    }
 
 
     private String generateAccountNumber() {

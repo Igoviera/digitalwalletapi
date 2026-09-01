@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/accounts")
 public class AccountController {
@@ -25,5 +27,21 @@ public class AccountController {
     @GetMapping("/{id}")
     public ResponseEntity<AccountResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(accountService.findById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AccountResponseDTO>> findAll() {
+        return ResponseEntity.ok(accountService.findAll());
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<AccountResponseDTO> findByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(accountService.findByUserId(userId));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> closeAccount(@PathVariable Long id) {
+        accountService.closeAccount(id);
+        return ResponseEntity.noContent().build();
     }
 }

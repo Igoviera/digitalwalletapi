@@ -1,5 +1,6 @@
 package br.com.igo.accountservice.entity;
 
+import br.com.igo.accountservice.enums.AccountStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,8 +25,9 @@ public class Account {
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal balance = BigDecimal.ZERO;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private AccountStatus status;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
@@ -41,7 +43,7 @@ public class Account {
         this.userId = userId;
         this.accountNumber = accountNumber;
         this.balance = BigDecimal.ZERO;
-        this.status = "ACTIVE";
+        this.status = AccountStatus.ACTIVE;
     }
 
     public Long getId() {
@@ -60,7 +62,7 @@ public class Account {
         return balance;
     }
 
-    public String getStatus() {
+    public AccountStatus getStatus() {
         return status;
     }
 
@@ -84,7 +86,7 @@ public class Account {
         this.balance = balance;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AccountStatus status) {
         this.status = status;
     }
 }
